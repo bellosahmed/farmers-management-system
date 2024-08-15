@@ -1,4 +1,5 @@
 // // import file
-// const User = require('./model');
 
+const User = require('./model');
 
+module.exports = {};

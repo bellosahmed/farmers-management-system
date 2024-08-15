@@ -1,9 +1,11 @@
 // to install or import npm packages or files
 const express = require('express');
-const { usersignup } = require('./controller');
+const { signup, login, logout } = require('./controller');
 
 const router = express.Router();
 
-router.post('/signup', usersignup); // for user to sign
+router.post('/signup', signup);// for user to user
+router.post('/login', login) // for user to login
+router.post('/logout', logout);
 
 module.exports = router;
