@@ -73,5 +73,10 @@ const logout = async (req, res) => {
     }
 };
 
+// Reset Password
+const verifypass = async (req, res) => {
+
+};
+
 // to export files
-module.exports = { signup, login, logout };
+module.exports = { signup, login, logout, verifypass };
