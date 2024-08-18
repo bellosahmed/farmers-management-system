@@ -33,6 +33,9 @@ const userSchema = new mongoose.Schema({
     dob: { // Date of Birth
         type: Date
     },
+    address: {
+        type: String
+    },
     gender: {
         type: String
     },
@@ -40,6 +43,15 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: ''
     },
+    role: {
+        type: String,
+        enum: ['user', 'admin'], // user has basic access while admin have more
+        default: 'user'
+    },
+    isVerified: {
+        type: Boolean,
+        default: true // when user is registered will show false untill he verifies his account
+    }
 }, { timestamps: true }); // timestamps create when the file is created
 
 
