@@ -49,6 +49,8 @@ const signup = async (req, res) => {
     }
 };
 
+// Verify Account
+
 // Login
 const login = async (req, res) => {
     try {
@@ -62,17 +64,22 @@ const login = async (req, res) => {
 
         if (!user) {
             return res.status(400).json({
-                message: 'User does not exist',
+                message: 'Username or Password maybe incorrect',
                 status: false
             });
         }
+        const token = createSendtoken(user, res);
 
-        res.status(200).json({ user, status: true });
+        res.status(200).json({ token, user, status: true });
     } catch (error) {
         res.status(500).json({ message: error.message });
         console.error("Error in loginUser: ", error.message);
     }
 };
+
+// Forgot Password
+
+// Reset Password
 
 // logout
 const logout = async (req, res) => {
@@ -86,10 +93,7 @@ const logout = async (req, res) => {
     }
 };
 
-// Reset Password
-const verifypass = async (req, res) => {
-
-};
+// Passport 
 
 // to export files
-module.exports = { signup, login, logout, verifypass };
+module.exports = { signup, login, logout, };

@@ -1,16 +1,17 @@
-// import packages
 const User = require('../user/model');
-
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
+
 dotenv.config();
 
+// Generate JWT token
 const signToken = id => {
     return jwt.sign({ id }, process.env.jwt_secret, {
         expiresIn: process.env.jwt_expires_in
     });
 };
 
+// Create and send token via cookie
 const createSendtoken = (user, res) => {
     const token = signToken(user._id);
 
@@ -18,52 +19,56 @@ const createSendtoken = (user, res) => {
     const expirationTime = new Date(
         Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
     );
+
     const cookieOptions = {
         expires: expirationTime,
-        httpOnly: true
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production' // Set secure flag in production
     };
+
     res.cookie('jwt', token, cookieOptions);
-    // Return the token 
+
+    // Return the token for other uses (e.g., in the response body)
     return token;
 };
 
+// Middleware to authenticate user
 const auth = async (req, res, next) => {
     let token;
+
     try {
-        if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) { // must have any credentials to login 
+        if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
             token = req.headers.authorization.split(' ')[1];
         }
 
-        if (!token) { // when token can't be found
-            return res.status(401).json({ msg: 'Unauthorized! You need to loggin', status: false });
+        if (!token) {
+            return res.status(401).json({ msg: 'Unauthorized! You need to log in.', status: false });
         }
 
-        console.log(req.headers);// to get the token
-        const decoded = await jwt.verify(token, process.env.jwt_secret) // verify the token
+        const decoded = jwt.verify(token, process.env.jwt_secret);
 
-        console.log(decoded); // to get userid
-        const user = await User.findById(decoded.id);   // find the user
+        const user = await User.findById(decoded.id);
 
-        if (!user) { // when user can't be found
-            return res.status(401).json({ msg: 'Cannot find user', status: false });
+        if (!user) {
+            return res.status(401).json({ msg: 'User not found.', status: false });
         }
-        console.log(user);
+
         req.user = user;
         next();
     } catch (e) {
-        console.error(e);
-        res.status(400).send({ msg: 'token is not valid', error: e.message });
+        console.error('Token verification error:', e.message);
+        res.status(401).json({ msg: 'Token is not valid.', error: e.message });
     }
-
 };
 
+// Middleware to restrict access based on role
 const restrict = (role) => {
     return (req, res, next) => {
         if (req.user.role !== role && req.user.role !== 'admin') {
-            return res.status(403).json({ message: 'You dont have access to this file', status: false });
+            return res.status(403).json({ message: 'You do not have access to this resource.', status: false });
         }
         next();
-    }
+    };
 };
 
 module.exports = { auth, signToken, createSendtoken, restrict };

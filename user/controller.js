@@ -1,21 +1,27 @@
-// // // import file
-// const User = require('./model');
+const User = require('./model');
+const { createSendtoken } = require('../middlewares/auth');
 
-// // Get User Profile
-// const getuser = async (req, res) => {
-//     const userId = req.params.id; // get user Id
-//     try {
-//         const user = await User.findById(userId).select('-password'); // find user by id
-//         if (!user) { // if no user
-//             return res.status(400).json({ message: "User not found", status: false });
-//         }
-//         // const token = createSendtoken(user, res); // passed the token
-//         //console.log(token);
-//         res.status(200).json({ status: true, user });
-//     } catch (error) {
-//         res.status(500).json({ message: error.message });
-//         console.log('Error in get user profile', message.error)
-//     }
-// };
+// User profile
+const getuser = async (req, res) => {
+    const userId = req.params.id; // Get the id of the user
+    try {
+        const user = await User.findById(userId).select('-password'); // Find user by id, excluding password
 
-// module.exports = { getuser };
+        if (!user) { // If no user is found
+            return res.status(404).json({ message: "User not found", status: false });
+        }
+
+        const token = createSendtoken(user, res); // Generate and send token
+        res.status(200).json({ status: true, token, user });
+    } catch (error) {
+        console.error('Error in get user profile:', error.message);
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// Edit 
+
+
+// Delete 
+
+module.exports = { getuser };

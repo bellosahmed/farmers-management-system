@@ -1,8 +1,8 @@
-// const express = require('express');
-// const { getuser } = require('./controller');
+const express = require('express');
+const { getuser } = require('./controller');
 
-// const router = express.Router();
+const router = express.Router();
 
-// router.get('/profile', getuser); // for user to user
+router.get('/profile/:id', getuser); // for profile
 
-// module.exports = router;
+module.exports = router;
