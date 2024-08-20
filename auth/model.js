@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 
+// Define the authSchema
 const authSchema = new mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
@@ -7,9 +8,48 @@ const authSchema = new mongoose.Schema({
         // required: true
     },
     password: {
-        type: 'String',
+        type: String,
         required: true,
     }
 }, { timestamps: true });
 
-module.exports = mongoose.model('Auth', authSchema);
+// Define the verifySchema
+const verifySchema = new mongoose.Schema({
+    owner: {  // ref to the user
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+    },
+    token: { // token serves as the pin 
+        type: String,
+    },
+    createdAt: { // when pin is created and expires after 1 hour
+        type: Date,
+        expires: 3600,
+        default: Date.now
+    }
+},
+
+    { timestamps: true }); // timestamps create when the file is created
+
+const resetSchema = new mongoose.Schema({
+    owner: { // ref to the user 
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+    },
+    token: {
+        type: String,
+    },
+    createdAt: { // when pin is create and expires after 1 hour
+        type: Date,
+        expires: 3600,
+        default: Date.now()
+    }
+}, { timestamps: true }); // timestamps create when the file is created
+
+
+// Export both models
+module.exports = {
+    Auth: mongoose.model('Auth', authSchema),
+    Verify: mongoose.model('Verify', verifySchema),
+    Resettoken: mongoose.model('Reset', resetSchema),
+};

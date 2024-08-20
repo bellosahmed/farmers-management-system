@@ -50,7 +50,7 @@ const userSchema = new mongoose.Schema({
     },
     isVerified: {
         type: Boolean,
-        default: true // when user is registered will show false untill he verifies his account
+        default: false // when user is registered will show false untill he verifies his account
     }
 }, { timestamps: true }); // timestamps create when the file is created
 
