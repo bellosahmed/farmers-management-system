@@ -3,6 +3,7 @@ const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 
+
 // Paths of folders and files
 const db = require('./config/db');
 const authRoute = require('./auth/route');

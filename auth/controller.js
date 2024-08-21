@@ -1,5 +1,5 @@
 const User = require('../user/model');
-const { Auth, Verify, Resettoken } = require('./model');
+const { Verify, Resettoken } = require('./model');
 const { createSendtoken } = require('../middlewares/auth');
 const { createTransporter, createMailOptions } = require('../utilis/email');
 const { generateOtp } = require('../utilis/otp');
@@ -29,11 +29,6 @@ const signup = async (req, res) => {
             address,
         });
 
-        const auth = new Auth({
-            userId: newUser._id,
-            password,
-        });
-
         const salt = await bcrypt.genSalt(10);
         newUser.password = await bcrypt.hash(password, salt);
 
@@ -60,7 +55,6 @@ const signup = async (req, res) => {
         await transporter.sendMail(mailOptions);
         await verify.save();
         await newUser.save();
-        await auth.save();
 
         res.status(201).json({
             newUser,
@@ -178,7 +172,13 @@ const login = async (req, res) => {
                 msg: 'Please verify your account before logging in. OTP has been sent for verification.',
                 status: false
             });
-        }
+        };
+
+        const isMatch = await bcrypt.compare(password, user.password);
+
+        if (!isMatch) {
+            return res.status(401).json({ msg: 'Invalid Credentials', status: false });
+        };
 
         const token = createSendtoken(user, res);
 

@@ -43,6 +43,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: ''
     },
+    password: {
+        type: String,
+        required: true,
+    },
     role: {
         type: String,
         enum: ['user', 'admin'], // user has basic access while admin have more

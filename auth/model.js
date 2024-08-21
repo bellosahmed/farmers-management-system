@@ -1,18 +1,5 @@
 const mongoose = require('mongoose');
 
-// Define the authSchema
-const authSchema = new mongoose.Schema({
-    userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        // required: true
-    },
-    password: {
-        type: String,
-        required: true,
-    }
-}, { timestamps: true });
-
 // Define the verifySchema
 const verifySchema = new mongoose.Schema({
     owner: {  // ref to the user
@@ -49,7 +36,6 @@ const resetSchema = new mongoose.Schema({
 
 // Export both models
 module.exports = {
-    Auth: mongoose.model('Auth', authSchema),
     Verify: mongoose.model('Verify', verifySchema),
     Resettoken: mongoose.model('Reset', resetSchema),
 };
