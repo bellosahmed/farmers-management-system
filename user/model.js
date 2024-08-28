@@ -52,6 +52,11 @@ const userSchema = new mongoose.Schema({
         enum: ['user', 'admin'], // user has basic access while admin have more
         default: 'user'
     },
+    status: {
+        type: String,
+        enum: ['pending', 'active', 'inactive'],
+        default: "pending"
+    },
     isVerified: {
         type: Boolean,
         default: false // when user is registered will show false untill he verifies his account
