@@ -51,4 +51,8 @@ const changestatus = async (req, res) => {
     }
 };
 
+// Admin can search by location or email
+
+// Admin by search by userid 
+
 module.exports = { alluser, changestatus, arp };
