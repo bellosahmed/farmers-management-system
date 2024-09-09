@@ -52,7 +52,21 @@ const changestatus = async (req, res) => {
 };
 
 // Admin can search by location or email
+const getemail = async (req, res) => {
+    const { email } = req.params;
+    try {
+        const user = await User.findOne({ email }).exec(); // Search for the user by email
+        if (user) {
+            res.status(200).json(user); // Return the user if found
+        } else {
+            res.status(404).json({ message: 'User not found' }); // Return a 404 if the user is not found
+        }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+        console.log('Error in getemail:', error.message);
+    }
+};
 
-// Admin by search by userid 
 
-module.exports = { alluser, changestatus, arp };
+
+module.exports = { alluser, changestatus, arp, getemail };
